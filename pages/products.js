@@ -1,10 +1,26 @@
 import Layout from "@/components/Layout"
+import { ProductsTable } from "@/components/ProductsTable"
+import axios from "axios"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 export default function Products() {
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    axios.get('/api/products')
+    .then(response => {
+      setProducts(response.data)
+    })
+    .catch(err => {
+      console.error(err)
+    })
+  }, [])
+
   return (
     <Layout>
-      <Link href={'/products/new'} className="bg-blue-900 text-white rounded-md py-1 px-2">Add new product</Link>
+      <Link href={'/products/new'} className="btn-primary">Add new product</Link>
+      <ProductsTable products={products}/>
     </Layout>
   )
 }

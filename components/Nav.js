@@ -1,37 +1,51 @@
 import Link from "next/link"
-import { HomeIcon, OrderIcon, ProductsIcon, SettingsIcon, StoreIcon } from "./icons/icons"
+import { CategoriesIcon, HomeIcon, LogoutIcon, OrderIcon, ProductsIcon, SettingsIcon, StoreIcon } from "./icons/icons"
 import { useRouter } from "next/router"
+import { signOut } from "next-auth/react"
+import Logo from "./Logo"
 
-const Nav = () => {
+const Nav = ({ show }) => {
   const inactiveLink = 'flex gap-2 p-1'
-  const activeLink = inactiveLink + ' bg-white text-blue-900 rounded-l-lg'
-  const pathname = useRouter().pathname
+  const activeLink = inactiveLink + ' bg-highlight text-black rounded-md'
+  const inactiveIcon = 'w-6 h-6'
+  const activeIcon = inactiveIcon + ' text-primary'
+  const router = useRouter()
+  const { pathname } = router
+  const logout = async () => {
+    await router.push('/')
+    await signOut()
+  }
 
   return (
-    <aside className="text-white p-4 pr-0">
-      <Link href={'/'} className="flex gap-2 mb-4 mr-2">
-        <StoreIcon />
-        <span>
-          Ecommerce-admin
-        </span>
-      </Link>
+    <aside className={(show ? 'left-0' : '-left-full') + "  text-gray-500 p-4 fixed w-full bg-bgGray h-full md:static md:w-auto transition-all"}>
+      <div className={(show && 'hidden') +" mb-4 mr-2"}>
+        <Logo />
+      </div>
       <nav className="flex flex-col gap-2">
         <Link href={'/'} className={pathname === '/' ? activeLink : inactiveLink}>
-          <HomeIcon />
+          <HomeIcon style={pathname === '/' ? activeIcon : inactiveIcon}/>
           Dashboard
         </Link>
         <Link href={'/products'} className={pathname.includes('/products') ? activeLink : inactiveLink}>
-          <ProductsIcon />
+          <ProductsIcon style={pathname === '/products' ? activeIcon : inactiveIcon}/>
           Products
         </Link>
+        <Link href={'/categories'} className={pathname.includes('/categories') ? activeLink : inactiveLink}>
+          <CategoriesIcon style={pathname === '/categories' ? activeIcon : inactiveIcon}/>
+          Categories
+        </Link>
         <Link href={'/orders'} className={pathname.includes('/orders') ? activeLink : inactiveLink}>
-          <OrderIcon />
+          <OrderIcon style={pathname === '/orders' ? activeIcon : inactiveIcon}/>
           Orders
         </Link>
         <Link href={'/settings'} className={pathname.includes('/settings') ? activeLink : inactiveLink}>
-          <SettingsIcon />
+          <SettingsIcon style={pathname === '/settings' ? activeIcon : inactiveIcon}/>
           Settings
         </Link>
+        <button className={inactiveLink} onClick={logout}>
+          <LogoutIcon style={inactiveIcon}/>
+          Logout
+        </button>
       </nav>
     </aside>
   )
